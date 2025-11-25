@@ -1,0 +1,139 @@
+# Template genérico — SKELETON
+# Contrato: init(vals), step() -> {"a": int, "b": int, "swap": bool, "done": bool}
+
+items = []
+n = 0
+# Punteros/estado para un merge-sort por pasos.
+# Usamos merges que insertan el elemento de la derecha en la izquierda
+# mediante swaps adyacentes (uno por micro-paso) para que el visualizador
+# que solo sabe hacer swaps pueda representar los movimientos.
+width = 1    # tamaño de bloque a mergear (1,2,4,...)
+left = 0     # inicio del bloque actual
+mid = 0      # fin del primer sub-bloque
+right = 0    # fin del segundo sub-bloque
+i = 0        # cursor izquierdo durante el merge
+j = 0        # cursor derecho durante el merge
+phase = 'start'   # 'start'|'compare'|'shifting'
+shifting_k = None # cursor usado cuando desplazamos un elemento desde la derecha hacia la izquierda
+
+def init(vals):
+    global items, n
+    items = list(vals)
+    n = len(items)
+    # Inicialización del estado del algoritmo
+    global width, left, mid, right, i, j, phase, shifting_k
+    width = 1
+    left = 0
+    mid = 0
+    right = 0
+    i = 0
+    j = 0
+    phase = 'start'
+    shifting_k = None
+
+def step():
+    # Implementa UN micro-paso del merge-sort.
+    # Estrategia: mergear bloques adyacentes [left..mid] y [mid+1..right].
+    # Cuando un elemento del segundo bloque debe insertarse antes de uno
+    # del primer bloque, lo desplazamos hacia la izquierda mediante swaps
+    # adyacentes (uno por micro-paso). Esto permite reutilizar la lógica
+    # de visualización que solo ejecuta swaps entre dos índices.
+
+    global items, n, width, left, mid, right, i, j, phase, shifting_k
+
+    # Casos triviales
+    if n <= 1:
+        return {"done": True}
+
+    # Si ya llegamos a width >= n, estamos ordenados
+    if width >= n:
+        return {"done": True}
+
+    # Buscar el siguiente bloque para mergear
+    while True:
+        if phase == 'start':
+            if left >= n:
+                # Fin de la pasada actual: duplicar block size y reiniciar
+                width *= 2
+                left = 0
+                if width >= n:
+                    return {"done": True}
+                # continuar buscando un bloque
+                continue
+
+            mid = min(left + width - 1, n - 1)
+            right = min(left + 2 * width - 1, n - 1)
+            if mid >= right:
+                # no hay segundo bloque (o vacío) -> saltar
+                left += 2 * width
+                continue
+            # inicializar cursores para este merge
+            i = left
+            j = mid + 1
+            shifting_k = None
+            phase = 'compare'
+
+        # Fase de comparación: decidir si avanzamos i o empezamos a desplazar j
+        if phase == 'compare':
+            # Si ya consumimos alguno de los runs, terminar este merge
+            if i > mid or j > right:
+                # terminado: pasar al siguiente bloque
+                a = min(max(left, 0), n - 1)
+                b = a
+                left += 2 * width
+                phase = 'start'
+                return {"a": a, "b": b, "swap": False, "done": False}
+
+            a = i
+            b = j
+            # Si el elemento izquierdo es menor o igual, avanzamos i
+            if items[i] <= items[j]:
+                i += 1
+                return {"a": a, "b": b, "swap": False, "done": False}
+            else:
+                # hay que insertar items[j] en la posición i; empezamos a desplazar
+                shifting_k = j
+                phase = 'shifting'
+                # realizamos un único swap adyacente (shifting_k-1, shifting_k)
+                items[shifting_k - 1], items[shifting_k] = items[shifting_k], items[shifting_k - 1]
+                new_k = shifting_k - 1
+                # si llegamos a i, la inserción terminó
+                if new_k == i:
+                    # ajustar punteros: el primer run creció en 1
+                    shifting_k = None
+                    i += 1
+                    mid += 1
+                    j += 1
+                    phase = 'compare'
+                else:
+                    shifting_k = new_k
+                    phase = 'shifting'
+                return {"a": new_k, "b": new_k + 1, "swap": True, "done": False}
+
+        # Fase de desplazamiento: seguimos moviendo el elemento desde la derecha hacia la izquierda
+        if phase == 'shifting':
+            # shifting_k apunta al índice actual del elemento que estamos moviendo
+            if shifting_k is None:
+                phase = 'compare'
+                continue
+            # hacemos un swap entre shifting_k-1 y shifting_k
+            if shifting_k - 1 < 0:
+                # debería no ocurrir, pero defendemos índices
+                phase = 'compare'
+                continue
+            items[shifting_k - 1], items[shifting_k] = items[shifting_k], items[shifting_k - 1]
+            new_k = shifting_k - 1
+            # Si llegamos a i, terminamos la inserción
+            if new_k == i:
+                shifting_k = None
+                i += 1
+                mid += 1
+                j += 1
+                phase = 'compare'
+            else:
+                shifting_k = new_k
+                phase = 'shifting'
+            return {"a": new_k, "b": new_k + 1, "swap": True, "done": False}
+
+    # Nunca debería alcanzarse
+    return {"done": True}
