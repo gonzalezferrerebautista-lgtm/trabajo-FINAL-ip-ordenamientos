@@ -9,7 +9,7 @@ def init(vals):
     global items, n, i, j
     items = list(vals)
     n = len(items)
-    i = 1      # común: arrancar en el segundo elemento
+    i = 1      # arrancar en el segundo elemento
     j = None
 
 def step():

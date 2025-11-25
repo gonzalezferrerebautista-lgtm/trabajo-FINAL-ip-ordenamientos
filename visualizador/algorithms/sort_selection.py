@@ -2,7 +2,7 @@
 
 items = []
 n = 0
-i = 0          # cabeza de la parte no ordenada
+i = 0          # puntero inicial de la pasada actual
 j = 0          # cursor que recorre y busca el mínimo
 min_idx = 0    # índice del mínimo de la pasada actual
 fase = "buscar"  # "buscar" | "swap"

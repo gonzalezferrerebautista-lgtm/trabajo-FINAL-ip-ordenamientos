@@ -1,9 +1,9 @@
 # Contrato: init(vals), step() -> {"a": int, "b": int, "swap": bool, "done": bool}
 
 items = []
-n = 0
-i = 0
-j = 0
+n = 0 # largo de lo sitems
+i = 0 # puntero externo
+j = 0 # puntero interno
 
 def init(vals):
     global items, n, i, j
@@ -33,8 +33,8 @@ def step():
         swap = True
 
     # 3) Avanzar punteros (preparar el próximo paso).
-    j +=1
-    if j >= n - 1 - i:
+    j +=1 # avanzar j
+    if j >= n - 1 - i: # si llega al final de la vuelta avanza i y reinicia j
         j = 0
         i += 1
 

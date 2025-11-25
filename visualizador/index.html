@@ -153,7 +153,13 @@
         var h  = Math.max(2*DPR, (it.value/maxVal) * (H - 10*DPR)) | 0;
         var y  = (H - h) | 0;
         var hi = (state.highlight.a===k || state.highlight.b===k);
-        ctx.fillStyle = hi ? '#22d3ee' : '#334155';
+        if (state.highlight.a === k) {
+          ctx.fillStyle = '#a78bfa'; // color para 'a'
+        } else if (state.highlight.b === k) {
+          ctx.fillStyle = '#22d3ee'; // color para 'b' (morado, hace juego con tu gradiente)
+        } else {
+          ctx.fillStyle = '#334155'; // color normal
+        }
         ctx.fillRect(x|0, y|0, w|0, h|0);
         x += w + gap;
       }
@@ -398,7 +404,7 @@
             <option value="insertion">Insertion Sort (PY)</option>
             <option value="selection">Selection Sort (PY)</option>
             <option value="quick">Quick Sort (PY)</option>
-<option value="merge">Merge Sort (PY)</option>
+            <option value="merge">Merge Sort (PY)</option>
 
           </select>
         </div>
