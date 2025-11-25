@@ -20,43 +20,50 @@ def step():
     # TODO:
     global items, n, i, j, min_idx, fase
 
+    # Caso trivial: si n <= 1, ya está ordenado
+    if n <= 1:
+        return {"done": True}
+    
+    # Cuando i llegue al final, devolvé {"done": True}.
+    if i >= n - 1:
+        return {"done": True}
     
     # - Fase "buscar": comparar j con min_idx, actualizar min_idx, avanzar j
-    if fase=="buscar": 
-        
-        if (items[j]<items[min_idx]) :
-            min_idx=j
-        a= min_idx
-        b= j
-        j+=1
-        
-        if j>=n:
-            fase="swap"
-
-    #   Devolver {"a": min_idx, "b": j_actual, "swap": False, "done": False}.
-        return {"a": a, "b": b, "swap": False, "done": False}
+    if fase == "buscar": 
+        if j < n:
+            if items[j] < items[min_idx]:
+                min_idx = j
+            a = min_idx
+            b = j
+            j += 1
+            # Si terminamos el barrido, pasar a fase "swap"
+            if j >= n:
+                fase = "swap"
+            return {"a": a, "b": b, "swap": False, "done": False}
+        else:
+            # Asegurar transición a swap si no hay más elementos
+            fase = "swap"
+            return {"a": min_idx, "b": min_idx, "swap": False, "done": False}
     
-    #   Al terminar el barrido, pasar a fase "swap".
-    
-
     # - Fase "swap": si min_idx != i, hacer ese único swap y devolverlo.
-    if fase=="swap":
+    if fase == "swap":
         if min_idx != i:
-            items[i],items[min_idx]=items[min_idx],items[i]
-            a=i
-            b=min_idx
+            items[i], items[min_idx] = items[min_idx], items[i]
+            a = i
+            b = min_idx
+            swap = True
         else:
             a = i
             b = i 
-        #   Luego avanzar i, reiniciar j=i+1 y min_idx=i, volver a "buscar".
-        i+=1
-        j=i+1
-        min_idx=i
-        fase="buscar"
-        return {"a": a, "b": b, "swap": True, "done": False}
+            swap = False
+        # Luego avanzar i, reiniciar j=i+1 y min_idx=i, volver a "buscar".
+        i += 1
+        j = i + 1
+        min_idx = i
+        fase = "buscar"
+        return {"a": a, "b": b, "swap": swap, "done": False}
     
-    # Cuando i llegue al final, devolvé {"done": True}.
-    if i >= n-1:
-        return {"done": True}
+    # Nunca debería alcanzarse
+    return {"done": True}
     
     
