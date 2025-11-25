@@ -1,7 +1,7 @@
 # Contrato: init(vals), step() -> {"a": int, "b": int, "swap": bool, "done": bool}
 
 items = []
-n = 0 # largo de lo sitems
+n = 0 
 i = 0 # puntero externo (contador de vueltas)
 j = 0 # puntero interno
 

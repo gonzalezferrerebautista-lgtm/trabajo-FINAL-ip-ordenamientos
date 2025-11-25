@@ -2,9 +2,9 @@
 
 items = []
 n = 0
-i = 0          # puntero inicial de la pasada actual
+i = 0          # contador de vueltas actual
 j = 0          # cursor que recorre y busca el mínimo
-min_idx = 0    # índice del mínimo de la pasada actual
+min_idx = 0    # índice del mínimo
 fase = "buscar"  # "buscar" | "swap"
 
 def init(vals):
@@ -20,11 +20,10 @@ def step():
     # TODO:
     global items, n, i, j, min_idx, fase
 
-    # Caso trivial: si n <= 1, ya está ordenado
     if n <= 1:
         return {"done": True}
     
-    # Cuando i llegue al final, devolvé {"done": True}.
+    # Si ya terminamos todas las vueltas
     if i >= n - 1:
         return {"done": True}
     
@@ -36,7 +35,7 @@ def step():
             a = min_idx
             b = j
             j += 1
-            # Si terminamos el barrido, pasar a fase "swap"
+            # Si terminamos pasar a fase "swap"
             if j >= n:
                 fase = "swap"
             return {"a": a, "b": b, "swap": False, "done": False}
@@ -56,14 +55,13 @@ def step():
             a = i
             b = i 
             swap = False
-        # Luego avanzar i, reiniciar j=i+1 y min_idx=i, volver a "buscar".
+        # Preparar la siguiente vuelta
         i += 1
         j = i + 1
         min_idx = i
         fase = "buscar"
         return {"a": a, "b": b, "swap": swap, "done": False}
     
-    # Nunca debería alcanzarse
     return {"done": True}
     
     
