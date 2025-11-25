@@ -1,9 +1,9 @@
 # TP Final IP — Visualización de algoritmos de ordenamiento
 
 ## 🟣 Grupo 3 - Integrantes:
-Fournier, Gabriel Fernando
-González Ferrere, Bautista
-Villalva, Juan Pablo
+- Fournier, Gabriel Fernando
+- González Ferrere, Bautista
+- Villalva, Juan Pablo
 
 ---
 
